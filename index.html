@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ইনকাম শুরু করুন — Web Mini App</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;color-scheme:dark}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,Arial;background:linear-gradient(180deg,#071029 0%, #071b2b 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#e6eef6}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;max-width:720px;width:100%;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    .title{font-size:20px;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+    .lead{color:var(--muted);margin:8px 0 20px;line-height:1.5}
+    .buttons{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{background:var(--accent);color:#042027;padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe8ef}
+    .small{font-size:13px;color:#9fb7c3;margin-top:14px}
+    .logo{width:44px;height:44px;border-radius:10px;display:inline-grid;place-items:center;background:linear-gradient(135deg,#0891b2,#06b6d4);font-weight:700;color:#012028}
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:60}
+    .modal.open{display:flex}
+    .modal-content{background:#021927;border-radius:10px;max-width:900px;width:94%;max-height:86vh;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+    .modal-body{padding:0}
+    .iframe-wrap{position:relative;padding-top:56.25%}
+    .iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .close{background:transparent;border:0;color:#cfe8ef;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer}
+    @media (max-width:520px){.title{font-size:18px}.card{padding:18px}}
+  </style>
+</head>
+<body>
+  <div class="card" role="region" aria-label="Income mini app promo">
+    <div style="display:flex;gap:14px;align-items:center">
+      <div class="logo">WM</div>
+      <div>
+        <h1 class="title">🌟 স্বাগতম, Yeasin!</h1>
+        <p class="lead">Web Mini App ব্যবহার করে এখনই আপনার আয় শুরু করুন। নিচের <strong>“ইনকাম শুরু করুন”</strong> বাটনে ক্লিক করে অ্যাপটি ওপেন করুন এবং কাজ শুরু করুন।</p>
+      </div>
+    </div>
+
+    <div class="buttons" style="margin-top:12px">
+      <!-- Replace data-app-url with your actual mini-app URL -->
+      <a class="btn" id="startBtn" href="#" data-app-url="https://example.com/mini-app" target="_blank" rel="noopener">👉 ইনকাম শুরু করুন</a>
+      <button class="btn secondary" id="watchBtn" type="button" aria-haspopup="dialog">🎥 টিউটোরিয়াল ভিডিও দেখুন</button>
+      <a class="btn secondary" id="learnMore" href="#" style="margin-left:auto" target="_blank" rel="noopener">📄 আরও জানুন</a>
+    </div>
+
+    <p class="small">টিপ: প্রথমে টিউটোরিয়াল দেখলে অ্যাপটি ব্যবহার করা সুবিধাজনক হবে।</p>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content" role="document">
+      <div class="modal-header">
+        <strong style="color:#e6eef6">টিউটোরিয়াল ভিডিও</strong>
+        <button class="close" id="closeModal" aria-label="Close tutorial">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="iframe-wrap">
+          <!-- Replace src below with your tutorial video URL (YouTube embed or hosted video) -->
+          <iframe id="tutorialFrame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Tutorial video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Behavior: open mini-app in new tab, open tutorial modal
+    document.getElementById('startBtn').addEventListener('click', function (e) {
+      const url = e.currentTarget.getAttribute('data-app-url') || '#';
+      // Open in new tab/window
+      if (url && url !== '#') {
+        window.open(url, '_blank', 'noopener');
+      } else {
+        alert('অ্যাপের URL সেট করা হয়নি। প্রশাসকের সাথে যোগাযোগ করুন।');
+      }
+    });
+
+    const modal = document.getElementById('modal');
+    const watchBtn = document.getElementById('watchBtn');
+    const closeModal = document.getElementById('closeModal');
+    const frame = document.getElementById('tutorialFrame');
+
+    watchBtn.addEventListener('click', () => {
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      // optionally autoplay
+      const src = frame.getAttribute('src');
+      if (src.indexOf('autoplay=1') === -1) {
+        frame.setAttribute('src', src + (src.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1');
+      }
+    });
+
+    closeModal.addEventListener('click', () => {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      // stop video
+      const src = frame.getAttribute('src').replace('&autoplay=1','').replace('?autoplay=1','');
+      frame.setAttribute('src', src);
+    });
+
+    // close on backdrop click
+    modal.addEventListener('click', (ev) => {
+      if (ev.target === modal) closeModal.click();
+    });
+
+    // keyboard ESC to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal.click();
+    });
+  </script>
+</body>
+</html>
